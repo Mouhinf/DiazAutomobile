@@ -1,4 +1,4 @@
-// File: /home/yui/dyad-apps/diaz-automobile/app/assistant/page.tsx
+// File: /home/yui/DiazAutomobile/app/assistant/page.tsx
 import * as entry from '../../../../app/assistant/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

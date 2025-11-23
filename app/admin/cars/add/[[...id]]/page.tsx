@@ -94,6 +94,13 @@ const AdminAddEditCarPage = () => {
       setVideoFiles([]);
     }
   }, [isEditing, existingCar]);
+  useEffect(() => {
+    if (isEditing && existingCar === null) {
+      toast.error("Véhicule non trouvé");
+      router.push('/admin/cars/manage');
+    }
+  }, [existingCar, isEditing]);
+
 
   useEffect(() => {
     if (isErrorExistingCar) {

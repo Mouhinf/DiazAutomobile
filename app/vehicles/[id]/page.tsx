@@ -1,20 +1,24 @@
 "use client";
 
-import React from 'react';
-import { useParams } from 'next/navigation';
-import { getCarById, Car } from '@/data/car-management';
-import { CarDetails } from '@/components/CarDetails';
-import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import React from "react";
+import { useParams } from "next/navigation";
+import { getCarById, Car } from "@/data/car-management";
+import { CarDetails } from "@/components/CarDetails";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const VehicleDetailPage = () => {
+const VehicleDetailPage: React.FC = () => {
   const params = useParams();
   const carId = params.id as string;
 
-  // Correction ici : Spécifier que le type de données peut être Car ou null
-  const { data: car, isLoading, isError } = useQuery<Car | null, Error>({
-    queryKey: ['car', carId],
-    queryFn: () => getCarById(carId),
+  // On force à renvoyer un Car ou throw une erreur si null
+  const { data: car, isLoading, isError } = useQuery<Car, Error>({
+    queryKey: ["car", carId],
+    queryFn: async () => {
+      const result = await getCarById(carId);
+      if (!result) throw new Error("Véhicule non trouvé");
+      return result;
+    },
     enabled: !!carId, // Only run query if carId is available
     staleTime: 1000 * 60 * 5, // Data considered fresh for 5 minutes
   });
@@ -56,19 +60,14 @@ const VehicleDetailPage = () => {
   if (isError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-red-600 dark:text-red-400">Erreur lors du chargement du véhicule.</p>
+        <p className="text-xl text-red-600 dark:text-red-400">
+          Erreur lors du chargement du véhicule.
+        </p>
       </div>
     );
   }
 
-  if (!car) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-gray-600 dark:text-gray-400">Véhicule non trouvé.</p>
-      </div>
-    );
-  }
-
+  // Plus besoin de vérifier !car ici, car queryFn throw si null
   return <CarDetails car={car} />;
 };
 

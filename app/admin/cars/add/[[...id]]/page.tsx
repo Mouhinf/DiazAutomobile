@@ -54,17 +54,17 @@ const AdminAddEditCarPage: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   // ---------- REACT QUERY ----------
-  const { data: existingCar, isLoading: isLoadingExistingCar, isError: isErrorExistingCar } = useQuery<Car, Error>({
-    queryKey: ["car", carId],
+  const { data: car, isLoading, isError } = useQuery<Car, Error>({
+    queryKey: ['car', carId],
     queryFn: async () => {
-      if (!carId) throw new Error("ID du véhicule manquant");
-      const car = await getCarById(carId);
-      if (!car) throw new Error("Véhicule non trouvé");
-      return car;
+      const result = await getCarById(carId);
+      if (!result) throw new Error('Véhicule non trouvé');
+      return result;
     },
-    enabled: isEditing && !!carId,
+    enabled: !!carId,
     staleTime: 1000 * 60 * 5,
   });
+
 
   // ---------- EFFECT POUR REMPLIR LE FORMULAIRE ----------
   useEffect(() => {

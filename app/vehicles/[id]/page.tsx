@@ -11,7 +11,8 @@ const VehicleDetailPage = () => {
   const params = useParams();
   const carId = params.id as string;
 
-  const { data: car, isLoading, isError } = useQuery<Car, Error>({
+  // Correction ici : Spécifier que le type de données peut être Car ou null
+  const { data: car, isLoading, isError } = useQuery<Car | null, Error>({
     queryKey: ['car', carId],
     queryFn: () => getCarById(carId),
     enabled: !!carId, // Only run query if carId is available

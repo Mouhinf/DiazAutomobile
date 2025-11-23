@@ -4,27 +4,22 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { getCarById, Car } from "@/data/car-management";
 import { CarDetails } from "@/components/CarDetails";
-import { useQuery, QueryFunction } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const VehicleDetailPage: React.FC = () => {
   const params = useParams();
   const carId = params.id as string;
 
-  // Définition du queryFn avec le type QueryFunction pour forcer le retour non-null
-  const queryFn: QueryFunction<Car, [string, string]> = async () => {
-    const car = await getCarById(carId);
-    if (!car) {
-      throw new Error("Véhicule non trouvé"); // Ne jamais renvoyer null
-    }
-    return car;
-  };
-
   const { data: car, isLoading, isError } = useQuery<Car, Error>({
     queryKey: ["car", carId],
-    queryFn,
-    enabled: !!carId, // Ne lancer la query que si carId est disponible
-    staleTime: 1000 * 60 * 5, // Considérer les données fraîches pendant 5 minutes
+    queryFn: async () => {
+      const result = await getCarById(carId);
+      if (!result) throw new Error("Véhicule non trouvé"); // ne jamais retourner null
+      return result; // TypeScript sait maintenant que c'est toujours Car
+    },
+    enabled: !!carId,
+    staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading) {
@@ -65,13 +60,12 @@ const VehicleDetailPage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <p className="text-xl text-red-600 dark:text-red-400">
-          Véhicule non trouvé ou erreur lors du chargement.
+          Erreur lors du chargement du véhicule.
         </p>
       </div>
     );
   }
 
-  // Ici on est sûr que car n'est jamais null
   return <CarDetails car={car} />;
 };
 

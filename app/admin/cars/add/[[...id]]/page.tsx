@@ -5,19 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-import {
-  Input,
-  Textarea,
-  Button,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  Label,
-  Skeleton,
-} from "@/components/ui";
-import { Loader2 } from "lucide-react";
+import { Loader2, XCircle } from "lucide-react";
+
+// IMPORTS CORRIGÉS POUR VERCEL
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { addCar, updateCar, getCarById, Car } from "@/data/car-management";
 
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -190,19 +187,30 @@ const AdminAddEditCarPage: React.FC = () => {
         {isEditing ? "Modifier le Véhicule" : "Ajouter un Véhicule"}
       </h1>
       <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-        {/* Exemple: Nom */}
+        {/* Nom */}
         <div>
           <Label htmlFor="name">Nom</Label>
           <Input id="name" value={carData.name} onChange={handleChange} placeholder="Nom du véhicule" />
         </div>
 
-        {/* Exemple: Brand */}
+        {/* Marque */}
         <div>
           <Label htmlFor="brand">Marque</Label>
           <Input id="brand" value={carData.brand} onChange={handleChange} placeholder="Marque" />
         </div>
 
-        {/* Ici tu peux ajouter les autres champs de manière similaire */}
+        {/* Model */}
+        <div>
+          <Label htmlFor="model">Modèle</Label>
+          <Input id="model" value={carData.model} onChange={handleChange} placeholder="Modèle" />
+        </div>
+
+        {/* Description */}
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea id="description" value={carData.description} onChange={handleChange} placeholder="Description du véhicule" />
+        </div>
+
         <Button type="submit" disabled={isUploading}>
           {isUploading ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : null}
           {isEditing ? "Modifier" : "Ajouter"}

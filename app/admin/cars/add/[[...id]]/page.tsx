@@ -50,12 +50,16 @@ const AdminAddEditCarPage = () => {
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
-  const { data: existingCar, isLoading, isError } = useQuery<Car | null, Error>({
+  const { data: existingCar, isLoading: isLoadingExistingCar, isError: isErrorExistingCar } = useQuery<Car, Error>({
     queryKey: ['car', carId],
-    queryFn: () => getCarById(carId!), // getCarById retourne Car | null
-    enabled: !!carId,
+    queryFn: async () => {
+      const car = await getCarById(carId!);
+        if (!car) throw new Error('Véhicule non trouvé');
+        return car;
+      },
+    enabled: isEditing && !!carId,
+    staleTime: 1000 * 60 * 5,
   });
-
 
   useEffect(() => {
     if (isEditing && existingCar) {

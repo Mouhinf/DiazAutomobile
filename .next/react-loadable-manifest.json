@@ -1,0 +1,8 @@
+{
+  "lib/firebase.ts -> firebase/analytics": {
+    "id": "lib/firebase.ts -> firebase/analytics",
+    "files": [
+      "static/chunks/_app-pages-browser_node_modules_pnpm_firebase_12_5_0_node_modules_firebase_analytics_dist_esm-7c647c.js"
+    ]
+  }
+}
